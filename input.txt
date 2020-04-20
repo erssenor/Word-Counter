@@ -1,0 +1,407 @@
+txt2html/HTML::TextToHTML Sample Conversion
+
+This sample is based hugely on the original sample.txt produced
+by Seth Golub for txt2html.
+
+I used the following options to convert this document:
+
+     -titlefirst -mailmode -make_tables
+     --custom_heading_regexp '^ *--[\w\s]+-- *$'
+     --system_link_dict txt2html.dict
+     --append_body sample.foot --infile sample.txt --outfile sample.html
+
+This has either been done at the command line with:
+
+	perl -MHTML::TextToHTML -e run_txt2html -- *options*
+
+or using the script
+
+	txt2html *options*
+
+or from a (test) perl script with:
+	
+	use HTML::TextToHTML;
+	my $conv = new HTML::TextToHTML();
+	$conv->txt2html([*options*]);
+
+======================================================================
+
+From bozo@clown.wustl.edu
+Return-Path: <bozo@clown.wustl.edu>
+Message-Id: <9405102200.AA04736@clown.wustl.edu>
+Content-Length: 1070
+From: bozo@clown.wustl.edu (Bozo the Clown)
+To: kitty@example.com (Kathryn Andersen)
+Subject: Re: HTML::TextToHTML
+Date: Sun, 12 May 2002 10:01:10 -0500
+
+Bozo wrote:
+BtC> Can you post an example text file with its html'ed output?
+BtC> That would provide a much better first glance at what it does
+BtC> without having to look through and see what the perl code does.
+
+Good idea.  I'll write something up.
+
+       -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+The header lines were kept separate because they looked like mail
+headers and I have mailmode on.  The same thing applies to Bozo's
+quoted text.  Mailmode doesn't screw things up very often, but since
+most people are usually converting non-mail, it's off by default.
+
+Paragraphs are handled ok.  In fact, this one is here just to
+demonstrate that.
+
+THIS LINE IS VERY IMPORTANT!
+(Ok, it wasn't *that* important)
+
+
+EXAMPLE HEADER
+==============
+
+Since this is the first header noticed (all caps, underlined with an
+"="), it will be a level 1 header.  It gets an anchor named
+"section_1".
+
+Another example
+===============
+This is the second type of header (not all caps, underlined with "=").
+It gets an anchor named "section_1_1".
+
+Yet another example
+===================
+
+This header was in the same style, so it was assigned the same header
+tag.  Note the anchor names in the HTML. (You probably can't see them
+in your current document view.)  Its anchor is named "section_1_2". 
+Get the picture?
+
+
+
+                    -- This is a custom header --
+
+You can define your own custom header patterns if you know what your
+documents look like.
+
+
+
+Features of HTML::TextToHTML
+============================
+
+ * Handles different kinds of lists
+   1. Bulleted
+   2. Numbered
+      - You can nest them as far as you want.
+      - It's pretty decent about figuring out which level of list it
+        is supposed to be on.
+        - You don't need to change bullet markers to start a new list.
+   3. Lettered
+      A. Finally handles lettered lists
+      B. Upper and lower case both work
+         a) Here's an example
+         b) I've been meaning to add this for some time.
+      C. HTML without CSS can't specify how ordered lists should be
+        indicated, so it will be a numbered list in most browsers.
+   4. Definition lists (see below)
+ * Doesn't screw up mail-ish things
+ * Spots preformated text
+
+                 It just needs to have enough whitespace in the line.
+        Surrounding blank lines aren't necessary.  If it sees enough
+        whitespace in a line, it preformats it.  How much is enough?
+        Set it yourself at command line if you want.
+
+ * You can append a file automatically to all converted files.  This
+   is handy for adding signatures to your documents.
+
+ * Deals with paragraphs decently.
+
+   Looks for short lines in the middle of paragraphs and keeps them
+   short with the use of breaks (<BR>).  How short the lines need to
+   be is configurable.
+
+   Unhyphenates split words that are in the middle of para-
+   graphs.  Let me know if trailing punctuation isn't handled "prop-
+   erly".  It should be.
+
+   One can also have multi-paragraph list items, like this one.
+
+ * Puts anchors at all headers and, if you're using the mail header
+   features, at the beginning of each mail message.  The anchor names
+   for headings are based on guessed section numbers.  
+   - You can turn off this option too, if you don't like it.
+
+ * Groks Mosaic-style "formatted text" headers (like the one below)
+
+ * Can hyperlink things according to a dictionary file.
+   The sample dictionary handles URLs like http://www.aigeek.com/ and
+   <http://www.katspace.com/> and also shows how to do simpler
+   things such as linking the word txt2html the first time it appeared.
+ * One can also use the link-dictionary to define custom tags, for
+   example using the star character to indicate *italics*.
+
+ * Recognises and parses tables of different types:
+   o DELIM: A table determined by delimiters.
+   o ALIGN: No need for fancy delimiters, this figures out
+     a table by looking at the layout, the spacing of the cells.
+   o BORDER: has a nice border around the table
+   o PGSQL: the same format as Postgresql query results.
+
+ * Also with XHTML!  Turn on the --xhtml option and it will ensure that
+   all paragraphs and list items have end-tags, all tags are in
+   lower-case, and the doctype is for XHTML.
+
+Example of short lines
+----------------------
+
+We're the knights of the round table
+We dance whene'er we're able
+We do routines and chorus scenes
+With footwork impeccable.
+We dine well here in Camelot
+We eat ham and jam and spam a lot.
+
+Example of varied formatting
+----------------------------
+
+If I want to *emphasize* something, then I'd use stars to wrap
+around the words, *even if there were more than one*, *that's*
+what I'd do.  But I could also _underline_ words, so long as
+the darn thing was not a_variable_name, in which case I wouldn't
+want to lose the underscores in something which thought it was
+underlining.  Though we might want to _underline more than one word_
+in a sentence.  Especially if it is _The Title Of A Book_.
+For another kind of emphasis, let's go and #put something in bold#.
+   But it doesn't even need to be that simple. Something which is *really
+exciting* is coping with italics and similar things *spread across
+multiple lines*.
+
+Example of Long Preformatting
+-----------------------------
+
+(extract from Let It Rain by Kristen Hall)
+
+	I have given, I have given and got none
+	Still I'm driven by something I can't explain
+	It's not a cross, it is a choice
+	I cannot help but hear his voice
+	I only wish that I could listen without shame
+
+	Let it rain, let it rain, on me
+	Let it rain, oh let it rain,
+	Let it rain, on me
+
+	I have been a witness to the perfect crime
+	Wipe the grin off of my face to hide the pain
+	It isn't worth the tears you cry
+	To have a perfect alibi
+	Now I'm beaten at the hands of my own game
+
+	Let it rain, let it rain, on me
+	Let it rain, oh let it rain,
+	Let it rain, on me
+
+Definition Lists
+----------------
+
+A definition list comprises the following:
+
+Term:
+  The term part of a DL item is a word on a line by itself, ending
+with a colon.
+Definition:
+The definition part of a DL item is at least one paragraph following
+the term.
+
+  If one has more than one paragraph in the definition, the first line of
+the next paragraph needs to be indented two spaces from where the term
+starts, otherwise we don't know that it belongs to the definition.
+
+Examples of Tables
+------------------
+
+ALIGN
+~~~~~
+
+Here is a simple ALIGN table:
+
+    -e  File exists.
+    -z  File has zero size.
+    -s  File has nonzero size (returns size).
+
+Here are some of the conditions of ALIGN tables:
+
+  #Context:#  A table needs to be surrounded by blank lines.
+   #Length:#  A table must contain at least two rows.
+    #Width:#  A table must contain at least two columns.
+  #Spacing:#  There needs to be at least two spaces between the columns,
+              otherwise there might be some random paragraph which
+              could have inter-word spacing that lined up by accident.
+#Cell Size:#  If you have more than one line (as just above) then
+              you will simply get empty cells where the other column is empty.
+#Alignment:#  Alignment of cells is attempted to be preserved.
+
+BORDER
+~~~~~~
+
+This is a table with a border.
+
+	+---------+-----+
+	| Food    | Qty |
+	+---------+-----+
+	| Bread   |   1 |
+	| Milk    |   1 |
+	| Oranges |   3 |
+	| Apples  |   6 |
+	+---------+-----+
+
+PGSQL
+~~~~~~
+
+This is the same table like Postgresql would make it.
+
+	 Food    | Qty 
+	---------+-----
+	 Bread   |   1 
+	 Milk    |   1 
+	 Oranges |   3 
+	 Apples  |   6 
+	(4 rows)
+
+DELIM
+~~~~~
+
+A delimited table needs to have its delimiters at the start and end,
+just to be sure that this is a table.
+
+:Fred:Nurk:58:
+:George:Washington:62:
+:Mary:Quant:35:
+
+And one can have almost any delimiter one wishes.
+
+| Darcy, Fitzwilliam | hero    |
+| Bennet, Elizabeth  | heroine |
+| Wickham, George    | villain |
+
+THINGS TO DO
+============
+
+There are some things which this module doesn't handle yet which
+I would like to implement.
+
+A. I would like to be able to preserve lettered lists, that is:
+   a) recognise that they are letters and not numbers (which it already
+      does)
+   b) display the correct OL properties with CSS so as to preserve
+      that information.
+
+----------------------------------------
+
+The footer is everything from the end of this sentence to the
+</BODY> tag.
+
+The following are the graphical (non-control) characters defined by
+ISO 8859-1 (1987).  Descriptions in words aren't all that helpful,
+but they're the best we can do in text.  A graphics file illustrating
+the character set should be available from the same archive as this
+file.
+
+Hex Description                 Hex Description
+
+20  SPACE
+21  EXCLAMATION MARK            A1  INVERTED EXCLAMATION MARK
+22  QUOTATION MARK              A2  CENT SIGN
+23  NUMBER SIGN                 A3  POUND SIGN
+24  DOLLAR SIGN                 A4  CURRENCY SIGN
+25  PERCENT SIGN                A5  YEN SIGN
+26  AMPERSAND                   A6  BROKEN BAR
+27  APOSTROPHE                  A7  SECTION SIGN
+28  LEFT PARENTHESIS            A8  DIAERESIS
+29  RIGHT PARENTHESIS           A9  COPYRIGHT SIGN
+2A  ASTERISK                    AA  FEMININE ORDINAL INDICATOR
+2B  PLUS SIGN                   AB  LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+2C  COMMA                       AC  NOT SIGN
+2D  HYPHEN-MINUS                AD  SOFT HYPHEN
+2E  FULL STOP                   AE  REGISTERED SIGN
+2F  SOLIDUS                     AF  OVERLINE
+30  DIGIT ZERO                  B0  DEGREE SIGN
+31  DIGIT ONE                   B1  PLUS-MINUS SIGN
+32  DIGIT TWO                   B2  SUPERSCRIPT TWO
+33  DIGIT THREE                 B3  SUPERSCRIPT THREE
+34  DIGIT FOUR                  B4  ACUTE ACCENT
+35  DIGIT FIVE                  B5  MICRO SIGN
+36  DIGIT SIX                   B6  PILCROW SIGN
+37  DIGIT SEVEN                 B7  MIDDLE DOT
+38  DIGIT EIGHT                 B8  CEDILLA
+39  DIGIT NINE                  B9  SUPERSCRIPT ONE
+3A  COLON                       BA  MASCULINE ORDINAL INDICATOR
+3B  SEMICOLON                   BB  RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+3C  LESS-THAN SIGN              BC  VULGAR FRACTION ONE QUARTER
+3D  EQUALS SIGN                 BD  VULGAR FRACTION ONE HALF
+3E  GREATER-THAN SIGN           BE  VULGAR FRACTION THREE QUARTERS
+3F  QUESTION MARK               BF  INVERTED QUESTION MARK
+40  COMMERCIAL AT               C0  CAPITAL LETTER A WITH GRAVE
+41  CAPITAL LETTER A            C1  CAPITAL LETTER A WITH ACUTE
+42  CAPITAL LETTER B            C2  CAPITAL LETTER A WITH CIRCUMFLEX
+43  CAPITAL LETTER C            C3  CAPITAL LETTER A WITH TILDE
+44  CAPITAL LETTER D            C4  CAPITAL LETTER A WITH DIAERESIS
+45  CAPITAL LETTER E            C5  CAPITAL LETTER A WITH RING ABOVE
+46  CAPITAL LETTER F            C6  CAPITAL LETTER AE
+47  CAPITAL LETTER G            C7  CAPITAL LETTER C WITH CEDILLA
+48  CAPITAL LETTER H            C8  CAPITAL LETTER E WITH GRAVE
+49  CAPITAL LETTER I            C9  CAPITAL LETTER E WITH ACUTE
+4A  CAPITAL LETTER J            CA  CAPITAL LETTER E WITH CIRCUMFLEX
+4B  CAPITAL LETTER K            CB  CAPITAL LETTER E WITH DIAERESIS
+4C  CAPITAL LETTER L            CC  CAPITAL LETTER I WITH GRAVE
+4D  CAPITAL LETTER M            CD  CAPITAL LETTER I WITH ACUTE
+4E  CAPITAL LETTER N            CE  CAPITAL LETTER I WITH CIRCUMFLEX
+4F  CAPITAL LETTER O            CF  CAPITAL LETTER I WITH DIAERESIS
+50  CAPITAL LETTER P            D0  CAPITAL LETTER ETH (Icelandic)
+51  CAPITAL LETTER Q            D1  CAPITAL LETTER N WITH TILDE
+52  CAPITAL LETTER R            D2  CAPITAL LETTER O WITH GRAVE
+53  CAPITAL LETTER S            D3  CAPITAL LETTER O WITH ACUTE
+54  CAPITAL LETTER T            D4  CAPITAL LETTER O WITH CIRCUMFLEX
+55  CAPITAL LETTER U            D5  CAPITAL LETTER O WITH TILDE
+56  CAPITAL LETTER V            D6  CAPITAL LETTER O WITH DIAERESIS
+57  CAPITAL LETTER W            D7  MULTIPLICATION SIGN
+58  CAPITAL LETTER X            D8  CAPITAL LETTER O WITH STROKE
+59  CAPITAL LETTER Y            D9  CAPITAL LETTER U WITH GRAVE
+5A  CAPITAL LETTER Z            DA  CAPITAL LETTER U WITH ACUTE
+5B  LEFT SQUARE BRACKET         DB  CAPITAL LETTER U WITH CIRCUMFLEX
+5C  REVERSE SOLIDUS             DC  CAPITAL LETTER U WITH DIAERESIS
+5D  RIGHT SQUARE BRACKET        DD  CAPITAL LETTER Y WITH ACUTE
+5E  CIRCUMFLEX ACCENT           DE  CAPITAL LETTER THORN (Icelandic)
+5F  LOW LINE                    DF  SMALL LETTER SHARP S (German)
+60  GRAVE ACCENT                E0  SMALL LETTER A WITH GRAVE
+61  SMALL LETTER A              E1  SMALL LETTER A WITH ACUTE
+62  SMALL LETTER B              E2  SMALL LETTER A WITH CIRCUMFLEX
+63  SMALL LETTER C              E3  SMALL LETTER A WITH TILDE
+64  SMALL LETTER D              E4  SMALL LETTER A WITH DIAERESIS
+65  SMALL LETTER E              E5  SMALL LETTER A WITH RING ABOVE
+66  SMALL LETTER F              E6  SMALL LETTER AE
+67  SMALL LETTER G              E7  SMALL LETTER C WITH CEDILLA
+68  SMALL LETTER H              E8  SMALL LETTER E WITH GRAVE
+69  SMALL LETTER I              E9  SMALL LETTER E WITH ACUTE
+6A  SMALL LETTER J              EA  SMALL LETTER E WITH CIRCUMFLEX
+6B  SMALL LETTER K              EB  SMALL LETTER E WITH DIAERESIS
+6C  SMALL LETTER L              EC  SMALL LETTER I WITH GRAVE
+6D  SMALL LETTER M              ED  SMALL LETTER I WITH ACUTE
+6E  SMALL LETTER N              EE  SMALL LETTER I WITH CIRCUMFLEX
+6F  SMALL LETTER O              EF  SMALL LETTER I WITH DIAERESIS
+70  SMALL LETTER P              F0  SMALL LETTER ETH (Icelandic)
+71  SMALL LETTER Q              F1  SMALL LETTER N WITH TILDE
+72  SMALL LETTER R              F2  SMALL LETTER O WITH GRAVE
+73  SMALL LETTER S              F3  SMALL LETTER O WITH ACUTE
+74  SMALL LETTER T              F4  SMALL LETTER O WITH CIRCUMFLEX
+75  SMALL LETTER U              F5  SMALL LETTER O WITH TILDE
+76  SMALL LETTER V              F6  SMALL LETTER O WITH DIAERESIS
+77  SMALL LETTER W              F7  DIVISION SIGN
+78  SMALL LETTER X              F8  SMALL LETTER O WITH STROKE
+79  SMALL LETTER Y              F9  SMALL LETTER U WITH GRAVE
+7A  SMALL LETTER Z              FA  SMALL LETTER U WITH ACUTE
+7B  LEFT CURLY BRACKET          FB  SMALL LETTER U WITH CIRCUMFLEX
+7C  VERTICAL LINE               FC  SMALL LETTER U WITH DIAERESIS
+7D  RIGHT CURLY BRACKET         FD  SMALL LETTER Y WITH ACUTE
+7E  TILDE                       FE  SMALL LETTER THORN (Icelandic)
+                                FF  SMALL LETTER Y WITH DIAERESIS
